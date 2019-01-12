@@ -76,7 +76,7 @@ const events = [{
 }];
 
 //STEP1 AND STEP2
-function PriceValue(barId, nbPersons, time){
+function computePriceValue(barId, nbPersons, time){
 	var price=-1;
 	var coef=1;
 	if(nbPersons>60){
@@ -101,10 +101,19 @@ function updatePrice(){
 		var barId=events[i].barId;	
 		var nbPersons=events[i].persons;
 		var time=events[i].time;
-		events[i].price=PriceValue(barId,nbPersons,time);		
+		events[i].price=computePriceValue(barId,nbPersons,time);		
 	}
 }
 
+//STEP3
+function updateCommission(){
+	for(var i=0;i<events.length;i++){
+		var commission=0.3*events[i].price;
+		var insurance=events[i].commission.insurance=0.5*commission;
+		var treasury=events[i].commission.treasury=events[i].persons;
+		events[i].commission.privateaser=commission-(insurance+treasury);
+	}	
+}
 
 //list of actors for payment
 //useful from step 5
@@ -184,3 +193,4 @@ console.log(bars);
 console.log(events);
 console.log(actors);
 updatePrice();
+updateCommission();
