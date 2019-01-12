@@ -75,7 +75,7 @@ const events = [{
   }
 }];
 
-//STEP1 AND STEP2
+//STEP1, STEP2 and STEP4
 function computePriceValue(barId, nbPersons, time){
 	var price=-1;
 	var coef=1;
@@ -101,7 +101,12 @@ function updatePrice(){
 		var barId=events[i].barId;	
 		var nbPersons=events[i].persons;
 		var time=events[i].time;
-		events[i].price=computePriceValue(barId,nbPersons,time);		
+		events[i].price=computePriceValue(barId,nbPersons,time);
+		//Add deductible
+		var deductible=events[i].options.deductibleReduction;
+		if(deductible){
+			events[i].price+=nbPersons;
+		}				
 	}
 }
 
