@@ -75,22 +75,35 @@ const events = [{
   }
 }];
 
-//STEP1 and 2
+//STEP1 AND STEP2
+function PriceValue(barId, nbPersons, time){
+	var price=-1;
+	var coef=1;
+	if(nbPersons>60){
+		coef=0.5;
+	}
+	else if(nbPersons>20){
+		coef=0.7
+	}
+	else if(nbPersons>10){
+		coef=0.9
+	}
+	for(var i=0;i<bars.length;i++){
+		if(barId==bars[i].id){
+			price=coef*nbPersons*bars[i].pricePerPerson+time*bars[i].pricePerHour;	
+		}			
+	}	
+	return price;
+}
+	
 function updatePrice(){
 	for (var i=0;i<events.length;i++){
-		var barId=events[i].barId;		
-		
-		for(var j=0;j<bars.length;j++){
-			if(barId==bars[j].id){
-				events[i].price=events[i].persons*bars[j].pricePerPerson+events[i].time*bars[j].pricePerHour;	
-			}		
-			
-		}		
+		var barId=events[i].barId;	
+		var nbPersons=events[i].persons;
+		var time=events[i].time;
+		events[i].price=PriceValue(barId,nbPersons,time);		
 	}
 }
-
-//STEP2
-
 
 
 //list of actors for payment
