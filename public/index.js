@@ -26,6 +26,8 @@ const bars = [{
 //The `price` is updated from step 1 and 2
 //The `commission` is updated from step 3
 //The `options` is useful from step 4
+
+
 const events = [{
   'id': 'bba9500c-fd9e-453f-abf1-4cd8f52af377',
   'booker': 'esilv-bde',
@@ -72,6 +74,24 @@ const events = [{
     'privateaser': 0
   }
 }];
+
+//STEP1 and 2
+function updatePrice(){
+	for (var i=0;i<events.length;i++){
+		var barId=events[i].barId;		
+		
+		for(var j=0;j<bars.length;j++){
+			if(barId==bars[j].id){
+				events[i].price=events[i].persons*bars[j].pricePerPerson+events[i].time*bars[j].pricePerHour;	
+			}		
+			
+		}		
+	}
+}
+
+//STEP2
+
+
 
 //list of actors for payment
 //useful from step 5
@@ -146,6 +166,8 @@ const actors = [{
   }]
 }];
 
+
 console.log(bars);
 console.log(events);
 console.log(actors);
+updatePrice();
