@@ -113,12 +113,18 @@ function updatePrice(){
 //STEP3
 function updateCommission(){
 	for(var i=0;i<events.length;i++){
-		var commission=0.3*events[i].price;
+		var deductible=events[i].options.deductibleReduction;
+		var deductibleReduction=0;
+		if(deductible){
+			deductibleReduction=events[i].persons;
+		}	
+		var commission=0.3*(events[i].price-deductibleReduction);
 		var insurance=events[i].commission.insurance=0.5*commission;
 		var treasury=events[i].commission.treasury=events[i].persons;
 		events[i].commission.privateaser=commission-(insurance+treasury);
 	}	
 }
+
 
 //list of actors for payment
 //useful from step 5
