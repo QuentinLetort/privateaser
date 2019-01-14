@@ -111,14 +111,19 @@ function updatePrice(){
 }
 
 //STEP3
+function computeCommission(eventObj){
+	var deductible=eventObj.options.deductibleReduction;
+	var deductibleReduction=0;
+	if(deductible){
+		deductibleReduction=eventObj.persons;
+	}	
+	var commission=0.3*(eventObj.price-deductibleReduction);
+	return commission;	
+}
+
 function updateCommission(){
 	for(var i=0;i<events.length;i++){
-		var deductible=events[i].options.deductibleReduction;
-		var deductibleReduction=0;
-		if(deductible){
-			deductibleReduction=events[i].persons;
-		}	
-		var commission=0.3*(events[i].price-deductibleReduction);
+		var commission=computeCommission(events[i]);
 		var insurance=events[i].commission.insurance=0.5*commission;
 		var treasury=events[i].commission.treasury=events[i].persons;
 		events[i].commission.privateaser=commission-(insurance+treasury);
@@ -199,9 +204,54 @@ const actors = [{
   }]
 }];
 
+//STEP5 
+function updateActorsPay(){
+	for(var i=0;i<events.length;i++){		
+		var eventObj=events[i];
+		for(var j=0;j<actors.length;j++){			
+			if(eventObj.id==actors[j].eventId){
+				var actorsPay=actors[j].payment;				
+				for(var k=0;k<actorsPay.length;k++){
+					switch (actorsPay[k].who) {
+						case 'booker':
+							actorsPay[k].amount=eventObj.price;
+							break;
+						case 'bar':
+							var commission=computeCommission(eventObj);		
+							var deduction=eventObj.options.deductibleReduction;
+							//The additional charge goes to Privateaser, not to the bar
+							if(deduction){
+								actorsPay[k].amount=eventObj.price-commission-eventObj.persons;
+							}
+							else{
+								actorsPay[k].amount=eventObj.price-commission;
+							}							
+							break;
+						case 'insurance':
+							actorsPay[k].amount=eventObj.commission.insurance;
+							break;
+						case 'treasury':
+							actorsPay[k].amount=eventObj.commission.treasury;
+							break;
+						case 'privateaser':
+							var deduction=eventObj.options.deductibleReduction;
+							if(deduction){
+								actorsPay[k].amount=eventObj.commission.privateaser+eventObj.persons;
+							}
+							else{
+								actorsPay[k].amount=eventObj.commission.privateaser;
+							}							
+							break;	
+					}
+				}				
+			}
+		}			
+	}	
+}
 
 console.log(bars);
 console.log(events);
 console.log(actors);
 updatePrice();
 updateCommission();
+updateActorsPay();
